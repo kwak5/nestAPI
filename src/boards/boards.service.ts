@@ -1,39 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { Board } from './board';
-import {v1 as uuid} from 'uuid'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { BoardDto } from './dto/BoardDto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Board } from './dto/BoardEntity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BoardsService {
-    private boardRepository : Board[] = [];
+    constructor(
+        @InjectRepository(Board) 
+        private boardRepository : Repository<Board>
+    ){}
 
-    createBoard(title:string,description:string):Board{
-        const board : Board = {
-            id:uuid(),
-            title,
-            description,
-        }
-        this.boardRepository.push(board)
-        return board;
-    }
+    async createBoard(boardDto:BoardDto): Promise<Board>{
+        const Board = this.boardRepository.create(boardDto);
+        return await this.boardRepository.save(Board);
 
-    findById(id:string):Board{
-        return this.boardRepository.find((b)=>b.id===id)
-        
     }
 
-    findAllBoards():Board[]{
-        return this.boardRepository;
+    async findAllBoard(): Promise<Board[]>{
+        return this.boardRepository.find();
     }
 
-    findByIDAndUpdate(id:string,title?:string,description?:string):Board{
-        const board : Board = this.findById(id);
-        board.title = title;
-        board.description = description;
-        return board;
+    async findBoardById(id:number): Promise<Board>{
+        return await this.boardRepository.findOne({where:{id}})
     }
-    deleteBoard(id:string):void{
-        this.boardRepository = this.boardRepository.filter((b)=>b.id !== id);
+
+    async findBoardByIdAndUpdate(id:number,boardDto:BoardDto): Promise<Board> {
+        const {title,description} = boardDto;
+        const found = await this.boardRepository.findOne({where:{id}});
+        found.title = title;
+        found.description = description;
+        return await this.boardRepository.save(found);
+
     }
+    
+    async deleteBoard(id:number):Promise<void> {
+        await this.boardRepository.delete(id);
+    }
+    
 
 }
 

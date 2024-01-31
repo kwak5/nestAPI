@@ -1,39 +1,51 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post } from '@nestjs/common';
 import { BoardsService } from './boards.service';
+import { BoardDto} from './dto/BoardDto';
+import { Board } from './dto/BoardEntity';
 
 @Controller('/boards')
 export class BoardsController {
-    constructor(private boardsService:BoardsService){}
-
-    @Get('/')
-    getAllBoards(){
-        return this.boardsService.findAllBoards();
+    constructor(
+        @Inject(BoardsService)private boardService:BoardsService
+    ){}
+    @Get('')
+    getBoards(): Promise<Board[]>{
+        return this.boardService.findAllBoard();
     }
-
-    @Post('/')
-    createBoard(
-        @Body('title') title:string,
-        @Body('description') description:string
-        ){
-        return this.boardsService.createBoard(title,description);
-    }
-
+    
     @Get('/:id')
-    findBoardById(@Param('id') id : string){
-        return this.boardsService.findById(id);
+    getBoardById(@Param('id') id:number):Promise<Board>{
+        
+        return this.boardService.findBoardById(id)
+
+    }
+    
+    @Post('/')
+    async createBoard(@Body() boardDto:BoardDto):Promise<Board>{
+        const board = await this.boardService.createBoard(boardDto);
+        return board;
+
     }
 
     @Patch('/:id')
-    findBoardByIdAndUpdate(
-        @Param('id') id:string,
-        @Body('title') title?:string,
-        @Body('description') description?:string
-        ){
-            return this.boardsService.findByIDAndUpdate(id,title,description);
-        }
+    async getBoardByIdAndUpdate(
+        @Param('id') id: number,
+        @Body() boardDto:BoardDto
+    ) :Promise<Board> {
+
+        const board = await this.boardService.findBoardByIdAndUpdate(id, boardDto);
+        return board;
+
+    }
 
     @Delete('/:id')
-    deleteBoard(@Param('id') id:string){
-        this.boardsService.deleteBoard(id)
+    async deleteBoard(
+        @Param('id') id:number
+    ){
+        
+        this.boardService.deleteBoard(id);
+
     }
+
+
 }
