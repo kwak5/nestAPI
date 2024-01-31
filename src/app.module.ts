@@ -35,7 +35,7 @@ import * as session from 'express-session';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(session({ secret: 'your-secret-key', resave: false, saveUninitialized: false }))
+      .apply(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }))
       .forRoutes('*');
   }
 }
