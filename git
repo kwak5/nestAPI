@@ -1,0 +1,23 @@
+[33mcommit 368ae97e764842182680a08de93e37bb6004825f[m[33m ([m[1;36mHEAD -> [m[1;32mboard[m[33m)[m
+Author: seong woo kwak <rickiq2011@naver.com>
+Date:   Wed Jan 31 22:49:37 2024 +0900
+
+    간단한 게시판 api
+
+[33mcommit 5d4e01997083fdd16e679cf566fdd64a67549135[m[33m ([m[1;31mnest/board[m[33m)[m
+Author: seong woo kwak <rickiq2011@naver.com>
+Date:   Mon Jan 29 04:49:24 2024 +0900
+
+    메모리 저장/ 간단한 CRUD
+
+[33mcommit 37ee39903a0b6ebb1450d5783fc9f66459c47482[m
+Author: seong woo kwak <rickiq2011@naver.com>
+Date:   Mon Jan 29 02:20:00 2024 +0900
+
+    new board domain
+
+[33mcommit c8b6b81a2bb692d0aa3cf0485737a12f43c7b5c7[m[33m ([m[1;31mnest/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: seong woo kwak <rickiq2011@naver.com>
+Date:   Mon Jan 29 01:57:29 2024 +0900
+
+    v0

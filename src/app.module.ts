@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BoardsModule } from './boards/boards.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Board } from './boards/dto/BoardEntity';
+import { Board } from './boards/BoardEntity';
+import { UsersModule } from './users/users.module';
+import { Users } from './users/userDto/userEntity';
+import * as session from 'express-session';
 
 @Module({
   imports: [
-    BoardsModule, 
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'postgres',
@@ -17,17 +19,23 @@ import { Board } from './boards/dto/BoardEntity';
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
-        entities: [Board],
+        entities: [Board,Users],
         synchronize: true
       })
     }),
+    UsersModule,
+    BoardsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
 })
-export class AppModule {
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(session({ secret: 'your-secret-key', resave: false, saveUninitialized: false }))
+      .forRoutes('*');
+  }
 }
