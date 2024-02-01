@@ -8,6 +8,7 @@ import { Board } from './boards/BoardEntity';
 import { UsersModule } from './users/users.module';
 import { Users } from './users/userDto/userEntity';
 import * as session from 'express-session';
+import { UserSessionService } from './users/userSession.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import * as session from 'express-session';
   ],
   controllers: [AppController],
   providers: [AppService, ConfigService],
+
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

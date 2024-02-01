@@ -1,7 +1,6 @@
-import { Body, Controller, Delete, Get, Inject, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Patch, Post, Req,  Session,  ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDto } from './userDto/UserDto';
-import { Users } from './userDto/userEntity';
 import { ChangeUserDto } from './userDto/ChangeUserDto';
 
 @Controller('users')
@@ -10,41 +9,40 @@ export class UsersController {
 
     @Post('/signUp')
     async signUp( 
-        @Body()userDto:UserDto,
-        @Req() req: any
+        @Body(ValidationPipe)userDto:UserDto,
+        @Session() session: Record<string,any>
         ){
-        return this.usersService.signUp(req,userDto);
+        return this.usersService.signUp(session,userDto);
     }
 
     @Post('/signin')
     async signIn( 
-        @Body()userDto:UserDto,
-        @Req() req: any,
+        @Body(ValidationPipe)userDto:UserDto,
+        @Session() session: Record<string,any>
         ){
         
-        return this.usersService.signIn(req,userDto);
+        return this.usersService.signIn(session,userDto);
     }
     @Get('/signOut')
     signOut(
-        @Req() req: any
+        @Session() session: Record<string,any>
     ){
-        return this.usersService.signOut(req)
+        return this.usersService.signOut(session)
     }
     
     @Patch('/changePassword')
     async changePassword(
-        @Req() req: any,
-        @Body() changeUserDto: ChangeUserDto,
+        @Body(ValidationPipe) changeUserDto: ChangeUserDto,
     ){
-        return this.usersService.changePassword(req, changeUserDto)
+        return this.usersService.changePassword(changeUserDto)
     }
     
     @Delete('/unRegister')
     async unRegister(
-        @Req() req: any,
-        @Body() userDto: UserDto,
+        @Session() session: Record<string,any>,
+        @Body(ValidationPipe) userDto: UserDto,
     ){
-        return this.usersService.unRegister(req, userDto)
+        return this.usersService.unRegister(session, userDto)
     }
 
 }
